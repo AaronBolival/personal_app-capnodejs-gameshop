@@ -1,0 +1,24 @@
+{
+  "name": "ageratingui",
+  "version": "0.0.1",
+  "description": "Description of ageratingui.",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "@ui5/cli": "^4.0.33",
+    "@sap/ux-ui5-tooling": "1",
+    "@sap-ux/eslint-plugin-fiori-tools": "^10.0.0",
+    "eslint": "^10",
+    "ui5-task-zipper": "^3"
+  },
+  "scripts": {
+    "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf",
+    "build": "ui5 build preload --clean-dest",
+    "start": "ui5 serve"
+  }
+}

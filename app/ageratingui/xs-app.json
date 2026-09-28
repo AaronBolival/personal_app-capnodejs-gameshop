@@ -1,0 +1,20 @@
+{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "none",
+  "routes": [
+    {
+      "source": "^/service/GameShopService/(.*)$",
+      "target": "/service/GameShopService/$1",
+      "destination": "srv-api",
+      "authenticationType": "none",
+      "csrfProtection": true
+      
+    },
+    {
+      "source": "^(.*)$",
+      "service": "html5-apps-repo-rt",
+      "target": "$1",
+      "authenticationType": "none"
+    }
+  ]
+}

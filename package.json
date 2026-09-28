@@ -2,22 +2,38 @@
   "name": "GameShop",
   "version": "1.0.0",
   "dependencies": {
-    "@cap-js/hana": "^2",
-    "@sap/cds": "^9",
+    "@cap-js/hana": "^3",
+    "@sap/cds": "^10.1.1",
+    "@sap/cds-compiler": "^7.1.1",
     "@sap/xssec": "^4"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^2.4"
+    "@cap-js/sqlite": "^3.1.1",
+    "@sap/cds-dk": "^10.1.0",
+    "cds-plugin-ui5": "^0.17.0"
   },
   "scripts": {
-    "start": "cds-serve"
+    "start": "cds-serve",
+    "watch-ageratingui": "cds watch --open ageratingui/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "cds": {
     "requires": {
       "[production]": {
-        "auth": "xsuaa"
-      }
+        "auth": "dummy"
+      },
+      "[development]": {
+        "auth": "dummy"
+      },
+      "html5-repo": true,
+      "destinations": true,
+      "workzone": true
     }
-  }
+  },
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/ageratingui"
+  ]
 }
