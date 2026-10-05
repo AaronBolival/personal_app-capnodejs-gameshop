@@ -26,6 +26,7 @@ modules:
         properties:
           srv-url: ${default-url}
     requires:
+      - name: GameShop-auth
       - name: GameShop-db
       - name: GameShop-destination
 
@@ -50,6 +51,7 @@ modules:
           name: srv-api # must be used in xs-app.json as well
           url: ~{srv-url}
           forwardAuthToken: true
+      - name: GameShop-auth
       - name: GameShop-html5-runtime
     provides:
       - name: app-api
@@ -63,15 +65,12 @@ modules:
     build-parameters:
       build-result: resources/
       requires:
-        - name: GameShopzageratingshopui
+        - name: GameShopageratingui
           artifacts:
-            - zageratingshopui.zip
-          target-path: resources/
-        - name: GameShopzreviewshopui
-          artifacts:
-            - zreviewshopui.zip
+            - ageratingui.zip
           target-path: resources/
     requires:
+      - name: GameShop-auth
       - name: srv-api
       - name: GameShop-html5-repo-host
         parameters:
@@ -89,20 +88,9 @@ modules:
             ForwardAuthToken: true
             DynamicDestination: true
 
-  - name: GameShopzageratingshopui
+  - name: GameShopageratingui
     type: html5
-    path: app/zageratingshopui
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm ci
-        - npm run build
-      supported-platforms:
-        []
-  - name: GameShopzreviewshopui
-    type: html5
-    path: app/zreviewshopui
+    path: app/ageratingui
     build-parameters:
       build-result: dist
       builder: custom
@@ -115,6 +103,10 @@ modules:
   - name: GameShop-destinations
     type: com.sap.application.content
     requires:
+      - name: GameShop-auth
+        parameters:
+          service-key:
+            name: GameShop-auth-key
       - name: GameShop-html5-repo-host
         parameters:
           service-key:
@@ -134,8 +126,30 @@ modules:
               ServiceInstanceName: GameShop-html5-repo-host
               ServiceKeyName: GameShop-html5-repo-host-key
               sap.cloud.service: GameShop.service
+            - Name: GameShop-auth
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: GameShop-auth
+              ServiceKeyName: GameShop-auth-key
+              sap.cloud.service: GameShop.service
 
 resources:
+  - name: GameShop-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: GameShop-${org}-${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - "binding-secret"
+            - "x509"
+          redirect-uris:
+            - https://*~{app-api/app-uri}/**
+    requires:
+      - name: app-api
   - name: GameShop-db
     type: com.sap.xs.hdi-container
     parameters:

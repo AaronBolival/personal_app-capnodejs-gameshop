@@ -1,2 +1,4 @@
 
-using from './ageratingui/annotations';
+using from './zageratingshopui/annotations';
+
+using from './zreviewshopui/annotations';
