@@ -1,6 +1,7 @@
 using { GameShop as dbschema } from '../db/schema.cds';
 
 @path : '/service/GameShopService'
+// @requires: 'authenticated-user'
 service GameShopService
 {   
     @odata.draft.enabled
@@ -30,6 +31,7 @@ service GameShopService
     entity Studio as projection on dbschema.zstudio;
 
     @odata.draft.enabled
+    // @restrict: [{ grant: 'READ', to: 'Viewer' }]
     entity AgeRating as projection on dbschema.zagerating;
 
     @odata.draft.enabled

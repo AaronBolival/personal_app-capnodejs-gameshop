@@ -169,15 +169,18 @@ annotate GameShopService.ReviewView with @(
         {
             
             $Type : 'UI.CollectionFacet',
+            ID: 'CommentDetails',
             Label : 'Comment Details',
             Facets : [
                 {
                     $Type : 'UI.ReferenceFacet',
+                    ID: 'Info',
                     Label : 'Info',
                     Target : '@UI.FieldGroup#Comment1'
                 },
                 {
                     $Type : 'UI.ReferenceFacet',
+                    ID: 'Comment',
                     Label : 'Comment',
                     Target : '@UI.FieldGroup#Comment2'
                 }
@@ -245,20 +248,24 @@ annotate GameShopService.Review with @(
     UI.Facets : [ 
         {
             $Type : 'UI.CollectionFacet',
+            ID: 'CommentDetails',
             Label : 'Comment Details',
             Facets : [
                 {
                     $Type : 'UI.ReferenceFacet',
+                    ID: 'Keys',
                     Label : 'Keys',
                     Target : '@UI.FieldGroup#Keys'                    
                 },                
                 {
                     $Type : 'UI.ReferenceFacet',
+                    ID: 'Details',
                     Label : 'Details',
                     Target : '@UI.FieldGroup#Details'
                 },
                 {
                     $Type : 'UI.ReferenceFacet',
+                    ID: 'Comment',
                     Label : 'Comment',
                     Target : '@UI.FieldGroup#Comment'                    
                 }
@@ -438,7 +445,7 @@ annotate GameShopService.AgeRating with @(
             Label : 'Name'
         }
     ],   
-    UI.FieldGroup #StudioDetails: {
+    UI.FieldGroup #AgeRating: {
         Data : [
              { $Type: 'UI.DataField', Value: code, Label: 'Code' },
              { $Type: 'UI.DataField', Value: name, Label: 'Name' }

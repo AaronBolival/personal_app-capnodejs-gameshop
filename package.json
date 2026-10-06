@@ -2,22 +2,46 @@
   "name": "GameShop",
   "version": "1.0.0",
   "dependencies": {
-    "@cap-js/hana": "^2",
-    "@sap/cds": "^9",
-    "@sap/xssec": "^4"
+    "@cap-js/hana": "^3.1.1",
+    "@sap/cds": "^10.1.1",
+    "@sap/cds-compiler": "^7.1.1",
+    "@sap/xssec": "^4.15.0"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^2.4"
+    "@cap-js/sqlite": "^3.1.1",
+    "@sap/cds-dk": "^10.1.0",
+    "cds-plugin-ui5": "^0.17.0",
+    "mbt": "^1.2.49",
+    "rimraf": "^5.0.5"
   },
   "scripts": {
-    "start": "cds-serve"
+    "start": "cds-serve",
+    "watch-zageratingshopui": "cds watch --open zageratingshopui/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "undeploy": "cf undeploy GameShop --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
+    "watch-zreviewshopui": "cds watch --open zreviewshopui/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "cds": {
     "requires": {
       "[production]": {
-        "auth": "xsuaa"
-      }
+        "auth": "dummy",
+        "db": "hana"
+      },
+      "[development]": {
+        "auth": "dummy"
+      },
+      "html5-repo": true,
+      "destinations": true,
+      "workzone": true
     }
-  }
+  },
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/zageratingshopui",
+    "app/zreviewshopui"
+  ]
 }
