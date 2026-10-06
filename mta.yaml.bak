@@ -1,174 +1,184 @@
 _schema-version: 3.3.0
 ID: GameShop
+description: A simple CAP project.
 version: 1.0.0
-description: "A simple CAP project."
+modules:
+- name: GameShop-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: GameShop-db
+  - name: GameShop-destination
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    instances: 1
+  build-parameters:
+    builder: npm-ci
+- name: GameShop-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+  - name: GameShop-db
+  parameters:
+    buildpack: nodejs_buildpack
+- name: GameShop
+  type: approuter.nodejs
+  path: app/router
+  requires:
+  - name: srv-api
+    group: destinations
+    properties:
+      forwardAuthToken: true
+      name: srv-api
+      url: ~{srv-url}
+  - name: GameShop-html5-runtime
+  - name: GameShop-destination
+    group: destinations
+    properties:
+      forwardAuthToken: false
+      name: ui5
+      url: https://ui5.sap.com
+  provides:
+  - name: app-api
+    properties:
+      app-protocol: ${protocol}
+      app-uri: ${default-uri}
+  parameters:
+    disk-quota: 256M
+    keep-existing-routes: true
+    memory: 256M
+- name: GameShop-app-deployer
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: srv-api
+  - name: GameShop-html5-repo-host
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+      content-target: true
+  parameters:
+    config:
+      destinations:
+      - Authentication: NoAuthentication
+        DynamicDestination: true
+        ForwardAuthToken: true
+        Name: srv-api
+        ProxyType: Internet
+        Type: HTTP
+        URL: ~{srv-api/srv-url}
+  build-parameters:
+    build-result: resources/
+    requires:
+    - artifacts:
+      - zageratingshopui.zip
+      name: GameShopzageratingshopui
+      target-path: resources/
+    - artifacts:
+      - zreviewshopui.zip
+      name: GameShopzreviewshopui
+      target-path: resources/
+    - artifacts:
+      - zreviewviewshopui.zip
+      name: zreviewviewshopui
+      target-path: resources/
+- name: GameShopzageratingshopui
+  type: html5
+  path: app/zageratingshopui
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []
+- name: GameShopzreviewshopui
+  type: html5
+  path: app/zreviewshopui
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []
+- name: zreviewviewshopui
+  type: html5
+  path: app/zreviewviewshopui
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []    
+- name: GameShop-destinations
+  type: com.sap.application.content
+  requires:
+  - name: GameShop-html5-repo-host
+    parameters:
+      service-key:
+        name: GameShop-html5-repo-host-key
+  - name: srv-api
+  - name: GameShop-destination
+    parameters:
+      content-target: true
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: GameShop-html5-repository
+          ServiceInstanceName: GameShop-html5-repo-host
+          ServiceKeyName: GameShop-html5-repo-host-key
+          sap.cloud.service: GameShop.service
+        existing_destinations_policy: update
+  build-parameters:
+    no-source: true
+resources:
+- name: GameShop-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+- name: GameShop-destination
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+    service: destination
+    service-plan: lite
+  requires:
+  - name: srv-api
+- name: GameShop-html5-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-host
+- name: GameShop-html5-runtime
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime
 parameters:
-  enable-parallel-deployments: true
   deploy_mode: html5-repo
+  enable-parallel-deployments: true
 build-parameters:
   before-all:
-    - builder: custom
-      commands:
-        - npm ci
-        - npx cds build --production
-modules:
-  - name: GameShop-srv
-    type: nodejs
-    path: gen/srv
-    parameters:
-      instances: 1
-      buildpack: nodejs_buildpack
-    build-parameters:
-      builder: npm-ci
-    provides:
-      - name: srv-api # required by consumers of CAP services (e.g. approuter)
-        properties:
-          srv-url: ${default-url}
-    requires:
-      - name: GameShop-auth
-      - name: GameShop-db
-      - name: GameShop-destination
-
-  - name: GameShop-db-deployer
-    type: hdb
-    path: gen/db
-    parameters:
-      buildpack: nodejs_buildpack
-    requires:
-      - name: GameShop-db
-  - name: GameShop
-    type: approuter.nodejs
-    path: app/router
-    parameters:
-      keep-existing-routes: true
-      disk-quota: 256M
-      memory: 256M
-    requires:
-      - name: srv-api
-        group: destinations
-        properties:
-          name: srv-api # must be used in xs-app.json as well
-          url: ~{srv-url}
-          forwardAuthToken: true
-      - name: GameShop-auth
-      - name: GameShop-html5-runtime
-    provides:
-      - name: app-api
-        properties:
-          app-protocol: ${protocol}
-          app-uri: ${default-uri}
-
-  - name: GameShop-app-deployer
-    type: com.sap.application.content
-    path: gen
-    build-parameters:
-      build-result: app/
-      requires:
-        - name: GameShopageratingui
-          artifacts:
-            - ageratingui.zip
-          target-path: app/
-    requires:
-      - name: GameShop-auth
-      - name: srv-api
-      - name: GameShop-html5-repo-host
-        parameters:
-          content-target: true
-          config:
-            HTML5Runtime_enabled: true
-    parameters:
-      config:
-        destinations:
-          - Name: srv-api
-            URL: ~{srv-api/srv-url}
-            Authentication: NoAuthentication
-            Type: HTTP
-            ProxyType: Internet
-            ForwardAuthToken: true
-            DynamicDestination: true
-
-  - name: GameShopageratingui
-    type: html5
-    path: app/ageratingui
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm ci
-        - npm run build
-      supported-platforms:
-        []
-
-  - name: GameShop-destinations
-    type: com.sap.application.content
-    requires:
-      - name: GameShop-auth
-        parameters:
-          service-key:
-            name: GameShop-auth-key
-      - name: GameShop-html5-repo-host
-        parameters:
-          service-key:
-            name: GameShop-html5-repo-host-key
-      - name: srv-api
-      - name: GameShop-destination
-        parameters:
-          content-target: true
-    build-parameters:
-      no-source: true
-    parameters:
-      content:
-        instance:
-          existing_destinations_policy: update
-          destinations:
-            - Name: GameShop-html5-repository
-              ServiceInstanceName: GameShop-html5-repo-host
-              ServiceKeyName: GameShop-html5-repo-host-key
-              sap.cloud.service: GameShop.service
-            - Name: GameShop-auth
-              Authentication: OAuth2UserTokenExchange
-              ServiceInstanceName: GameShop-auth
-              ServiceKeyName: GameShop-auth-key
-              sap.cloud.service: GameShop.service
-
-resources:
-  - name: GameShop-auth
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      service-plan: application
-      path: ./xs-security.json
-      config:
-        xsappname: GameShop-${org}-${space}
-        tenant-mode: dedicated
-        oauth2-configuration:
-          credential-types:
-            - "binding-secret"
-            - "x509"
-          redirect-uris:
-            - https://*~{app-api/app-uri}/**
-    requires:
-      - name: app-api
-  - name: GameShop-db
-    type: com.sap.xs.hdi-container
-    parameters:
-      service: hana
-      service-plan: hdi-shared
-  - name: GameShop-destination
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-plan: lite
-    requires:
-      - name: srv-api
-
-  - name: GameShop-html5-repo-host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-host
-  - name: GameShop-html5-runtime
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-runtime
+  - builder: custom
+    commands:
+    - npm ci
+    - npx cds build --production
+    - mkdir -p resources
