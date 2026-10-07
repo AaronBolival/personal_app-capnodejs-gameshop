@@ -21,7 +21,8 @@
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
     "watch-zreviewshopui": "cds watch --open zreviewshopui/index.html?sap-ui-xx-viewCache=false --livereload false",
-    "watch-zreviewviewshopui": "cds watch --open zreviewviewshopui/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-zreviewviewshopui": "cds watch --open zreviewviewshopui/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-zgameshopui": "cds watch --open zgameshopui/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "cds": {
@@ -44,6 +45,7 @@
   "sapux": [
     "app/zageratingshopui",
     "app/zreviewshopui",
-    "app/zreviewviewshopui"
+    "app/zreviewviewshopui",
+    "app/zgameshopui"
   ]
 }
