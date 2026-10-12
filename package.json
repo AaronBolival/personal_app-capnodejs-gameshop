@@ -22,7 +22,11 @@
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
     "watch-zreviewshopui": "cds watch --open zreviewshopui/index.html?sap-ui-xx-viewCache=false --livereload false",
     "watch-zreviewviewshopui": "cds watch --open zreviewviewshopui/index.html?sap-ui-xx-viewCache=false --livereload false",
-    "watch-zgameshopui": "cds watch --open zgameshopui/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-zgameshopui": "cds watch --open zgameshopui/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-zpublishershopui": "cds watch --open zpublishershopui/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-zstudioshopui": "cds watch --open zstudioshopui/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-zplatformshopui": "cds watch --open zplatformshopui/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-zcategorylistshopui": "cds watch --open zcategorylistshopui/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "cds": {
@@ -46,6 +50,10 @@
     "app/zageratingshopui",
     "app/zreviewshopui",
     "app/zreviewviewshopui",
-    "app/zgameshopui"
+    "app/zgameshopui",
+    "app/zpublishershopui",
+    "app/zstudioshopui",
+    "app/zplatformshopui",
+    "app/zcategorylistshopui"
   ]
 }

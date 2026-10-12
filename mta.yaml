@@ -90,6 +90,22 @@ modules:
       - zgameshopui.zip
       name: zgameshopui
       target-path: resources/
+    - artifacts:
+      - zpublishershopui.zip
+      name: zpublishershopui
+      target-path: resources/
+    - artifacts:
+      - zstudioshopui.zip
+      name: zstudioshopui
+      target-path: resources/
+    - artifacts:
+      - zplatformshopui.zip
+      name: zplatformshopui
+      target-path: resources/
+    - artifacts:
+      - zcategorylistshopui.zip
+      name: zcategorylistshopui
+      target-path: resources/
 - name: GameShopzageratingshopui
   type: html5
   path: app/zageratingshopui
@@ -120,6 +136,56 @@ modules:
     - npm ci
     - npm run build
     supported-platforms: []
+- name: zgameshopui
+  type: html5
+  path: app/zgameshopui
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []
+- name: zpublishershopui
+  type: html5
+  path: app/zpublishershopui
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []
+- name: zstudioshopui
+  type: html5
+  path: app/zstudioshopui
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []
+- name: zplatformshopui
+  type: html5
+  path: app/zplatformshopui
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []
+- name: zcategorylistshopui
+  type: html5
+  path: app/zcategorylistshopui
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []
 - name: GameShop-destinations
   type: com.sap.application.content
   requires:
@@ -142,16 +208,6 @@ modules:
         existing_destinations_policy: update
   build-parameters:
     no-source: true
-- name: zgameshopui
-  type: html5
-  path: app/zgameshopui
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm ci
-    - npm run build
-    supported-platforms: []
 resources:
 - name: GameShop-db
   type: com.sap.xs.hdi-container

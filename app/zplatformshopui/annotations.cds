@@ -1,0 +1,1 @@
+using GameShopService as service from '../../srv/service';
